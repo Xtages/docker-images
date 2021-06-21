@@ -26,6 +26,9 @@ http {
         '"status": "$status",'
         '"body_bytes_sent":"$body_bytes_sent",'
         '"request_time":"$request_time",'
+        '"organization":"${ORGANIZATION_HASH}",'
+        '"project":"${APP_NAME}",'
+        '"environment":"${APP_ENV}",'
         '"http_referrer":"$http_referer",'
         '"http_user_agent":"$http_user_agent"'
       '}';
