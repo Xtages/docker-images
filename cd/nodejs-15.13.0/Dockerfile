@@ -7,7 +7,7 @@ ENV NODE_VER=${NODE_VER}
 ARG NVM_VER=0.38.0
 ENV NVM_VER=${NVM_VER}
 
-RUN yum -y install git unzip docker
+RUN yum -y install update git unzip docker
 
 # Terraform install
 RUN curl -L -O https://releases.hashicorp.com/terraform/${TERRAFORM_VER}/terraform_${TERRAFORM_VER}_linux_amd64.zip
@@ -22,3 +22,5 @@ RUN source ~/.bashrc && nvm install ${NODE_VER}
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 RUN unzip -q awscliv2.zip && rm *.zip
 RUN ./aws/install
+
+VOLUME /var/lib/docker
