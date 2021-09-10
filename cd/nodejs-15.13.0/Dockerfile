@@ -9,6 +9,8 @@ ENV NVM_VER=${NVM_VER}
 
 RUN yum -y install update git unzip docker
 
+COPY init.sh /opt/init.sh
+
 # Terraform install
 RUN curl -L -O https://releases.hashicorp.com/terraform/${TERRAFORM_VER}/terraform_${TERRAFORM_VER}_linux_amd64.zip
 RUN unzip terraform_${TERRAFORM_VER}_linux_amd64.zip -d /usr/sbin && rm *.zip

@@ -12,7 +12,7 @@ Currently, we don't have automation for this so whenever a change is done to any
 by pushing the new image to ECR.
 
 ```bash
-aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 606626603369.dkr.ecr.us-east-1.amazonaws.com
-docker build --tag 606626603369.dkr.ecr.us-east-1.amazonaws.com/{reponame}:{version}
-docker push 606626603369.dkr.ecr.us-east-1.amazonaws.com/{reponame}:{version}
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 605769209612.dkr.ecr.us-east-1.amazonaws.com
+docker build --tag 605769209612.dkr.ecr.us-east-1.amazonaws.com/{reponame}:{version}
+docker push 605769209612.dkr.ecr.us-east-1.amazonaws.com/{reponame}:{version}
 ```
