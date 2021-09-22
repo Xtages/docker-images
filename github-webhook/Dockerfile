@@ -1,5 +1,5 @@
 # Docker image to build console
-FROM amazonlinux:2018.03
+FROM debian:stable
 
 ARG JAVA_VER=15
 ARG GRADLE_VER=6.8.3
@@ -14,12 +14,16 @@ ENV NODE_VER=${NODE_VER}
 ENV NVM_VER=${NVM_VER}
 ENV POSTGRES_VER=${POSTGRES_VER}
 
-# JAVA install
-RUN rpm --import https://yum.corretto.aws/corretto.key
-RUN curl -L -o /etc/yum.repos.d/corretto.repo https://yum.corretto.aws/corretto.repo
+ENV DEBIAN_FRONTEND=noninteractive
 
-RUN yum -y install git unzip java-${JAVA_VER}-amazon-corretto-devel docker
-ENV JAVA_HOME=/usr/lib/jvm/java-${JAVA_VER}-amazon-corretto/
+RUN apt-get update --fix-missing
+RUN apt-get -y install unzip postgresql-13 curl software-properties-common gnupg npm
+
+# JAVA install
+RUN curl -L -O https://apt.corretto.aws/corretto.key
+RUN apt-key add corretto.key
+RUN add-apt-repository 'deb https://apt.corretto.aws stable main'
+RUN apt-get update; apt-get install -y java-${JAVA_VER}-amazon-corretto-jdk
 
 # Gradle install
 RUN curl -L -O https://services.gradle.org/distributions/gradle-${GRADLE_VER}-all.zip
@@ -32,12 +36,17 @@ ENV PATH="${GRADLE_HOME}/bin:${PATH}"
 RUN curl -L -O https://releases.hashicorp.com/terraform/${TERRAFORM_VER}/terraform_${TERRAFORM_VER}_linux_amd64.zip
 RUN unzip terraform_${TERRAFORM_VER}_linux_amd64.zip -d /usr/sbin && rm *.zip
 
-# NodeJS install
-RUN touch ~/.bashrc && chmod +x ~/.bashrc
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v${NVM_VER}/install.sh | bash
-RUN source ~/.bashrc && nvm install ${NODE_VER}
+# Node install
+RUN npm cache clean -f && npm install -g n && n ${NODE_VER}
 
 # AWS CLI install
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.1.36.zip" -o "awscliv2.zip"
 RUN unzip -q awscliv2.zip && rm *.zip
 RUN ./aws/install
+
+# Postgres config
+COPY pg_hba.conf /etc/postgresql/13/main/pg_hba.conf
+
+COPY start.sh /opt/start.sh
+RUN chmod +x /opt/start.sh
+ENTRYPOINT /opt/start.sh
